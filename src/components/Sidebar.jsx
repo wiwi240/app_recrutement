@@ -5,15 +5,17 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <h2>Skills</h2>
+      <h2>Compétences</h2>
       {skills.length > 0 ? (
-        <ul className="skills-list">
+        <ul className="sidebar-skills-list">
           {skills.map((skill) => (
-            <li key={skill}>{skill}</li>
+            <li key={skill} className="sidebar-skill-item">
+              {skill}
+            </li>
           ))}
         </ul>
       ) : (
-        <p>No skills provided yet.</p>
+        <p>Aucune compétence renseignée.</p>
       )}
     </aside>
   );

@@ -9,6 +9,27 @@ export default function Profile() {
   const firstName = useSelector((state) => state.user.firstName ?? '');
   const lastName = useSelector((state) => state.user.lastName ?? '');
   const skills = useSelector((state) => state.skills.skills);
+  const [currentSkills, setCurrentSkills] = useState(skills);
+  const [skillInput, setSkillInput] = useState('');
+
+  const addSkill = () => {
+    const nextSkill = normalizeText(skillInput);
+
+    if (!nextSkill) {
+      return;
+    }
+
+    setCurrentSkills((previousSkills) => [...previousSkills, nextSkill]);
+    setSkillInput('');
+    setIsSaved(false);
+  };
+
+  const removeSkill = (skillToRemove) => {
+    setCurrentSkills((previousSkills) =>
+      previousSkills.filter((skill) => skill !== skillToRemove),
+    );
+    setIsSaved(false);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -16,7 +37,10 @@ export default function Profile() {
 
     const nextFirstName = normalizeText(formData.get('firstName'));
     const nextLastName = normalizeText(formData.get('lastName'));
-    const nextSkills = splitSkills(formData.get('skills'));
+    const pendingSkill = normalizeText(skillInput);
+    const nextSkills = pendingSkill
+      ? [...currentSkills, pendingSkill]
+      : currentSkills;
 
     dispatch(
       updateUser({
@@ -25,6 +49,8 @@ export default function Profile() {
       }),
     );
     dispatch(updateSkills(nextSkills));
+    setCurrentSkills(nextSkills);
+    setSkillInput('');
     setIsSaved(true);
   };
 
@@ -55,16 +81,54 @@ export default function Profile() {
           </label>
         </div>
 
-        <label>
-          Compétences
-          <textarea
-            name="skills"
-            rows="4"
-            defaultValue={skills.join('\n')}
-            placeholder={'Dev front-end\nReact\nJotai'}
-            onChange={() => setIsSaved(false)}
-          />
-        </label>
+        <div className="skills-editor">
+          <label>
+            Nouvelle compétence
+            <div className="skill-input-row">
+              <input
+                name="skill"
+                type="text"
+                value={skillInput}
+                placeholder="Ex: React"
+                onChange={(event) => {
+                  setSkillInput(event.target.value);
+                  setIsSaved(false);
+                }}
+              />
+              <button
+                type="button"
+                className="add-skill-button"
+                onClick={addSkill}
+              >
+                Ajouter une compétence
+              </button>
+            </div>
+          </label>
+
+          <div className="skills-preview">
+            <span>Compétences ajoutées</span>
+            {currentSkills.length > 0 ? (
+              <ul className="profile-skills-list">
+                {currentSkills.map((skill) => (
+                  <li key={skill} className="profile-skill-item">
+                    <span>{skill}</span>
+                    <button
+                      type="button"
+                      className="remove-skill-button"
+                      onClick={() => removeSkill(skill)}
+                    >
+                      Supprimer
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="empty-skills-message">
+                Aucune compétence ajoutée pour le moment.
+              </p>
+            )}
+          </div>
+        </div>
 
         <div className="profile-actions">
           <button type="submit" className="save-button">
@@ -80,11 +144,4 @@ export default function Profile() {
 function normalizeText(value) {
   const text = String(value ?? '').trim();
   return text.length > 0 ? text : null;
-}
-
-function splitSkills(value) {
-  return String(value ?? '')
-    .split(/\n|,/)
-    .map((skill) => skill.trim())
-    .filter(Boolean);
 }
