@@ -1,9 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 import { updateSkills } from '../store/reducers/skillsReducer';
 import { updateUser } from '../store/reducers/userReducer';
 
 export default function Profile() {
   const dispatch = useDispatch();
+  const [isSaved, setIsSaved] = useState(false);
   const firstName = useSelector((state) => state.user.firstName ?? '');
   const lastName = useSelector((state) => state.user.lastName ?? '');
   const skills = useSelector((state) => state.skills.skills);
@@ -23,38 +25,53 @@ export default function Profile() {
       }),
     );
     dispatch(updateSkills(nextSkills));
+    setIsSaved(true);
   };
 
   return (
-    <section className="panel">
-      <h1>Profil</h1>
-      <p className="lead">
-        Modifie ici les informations qui seront visibles dans le header et sur
-        la page d&apos;accueil.
-      </p>
+    <section className="profile-card">
+      <h1>Mon profil</h1>
 
       <form className="profile-form" onSubmit={handleSubmit}>
-        <label>
-          Prénom
-          <input name="firstName" type="text" defaultValue={firstName} />
-        </label>
+        <div className="profile-grid">
+          <label>
+            Prénom
+            <input
+              name="firstName"
+              type="text"
+              defaultValue={firstName}
+              onChange={() => setIsSaved(false)}
+            />
+          </label>
 
-        <label>
-          Nom
-          <input name="lastName" type="text" defaultValue={lastName} />
-        </label>
+          <label>
+            Nom
+            <input
+              name="lastName"
+              type="text"
+              defaultValue={lastName}
+              onChange={() => setIsSaved(false)}
+            />
+          </label>
+        </div>
 
         <label>
           Compétences
           <textarea
             name="skills"
-            rows="5"
-            defaultValue={skills.join(', ')}
-            placeholder="React, Redux, CSS"
+            rows="4"
+            defaultValue={skills.join('\n')}
+            placeholder={'Dev front-end\nReact\nJotai'}
+            onChange={() => setIsSaved(false)}
           />
         </label>
 
-        <button type="submit">Enregistrer le profil</button>
+        <div className="profile-actions">
+          <button type="submit" className="save-button">
+            SAUVEGARDER
+          </button>
+          {isSaved ? <p className="save-message">OK, sauvegardé !</p> : null}
+        </div>
       </form>
     </section>
   );
@@ -67,7 +84,7 @@ function normalizeText(value) {
 
 function splitSkills(value) {
   return String(value ?? '')
-    .split(',')
+    .split(/\n|,/)
     .map((skill) => skill.trim())
     .filter(Boolean);
 }

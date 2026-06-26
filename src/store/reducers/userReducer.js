@@ -1,10 +1,8 @@
+import { defaultUser } from '../defaultState';
+
 const UPDATE_USER = 'user/update';
 
-const initialState = {
-  firstName: null,
-  lastName: null,
-  fullName: null,
-};
+const initialState = defaultUser;
 
 export function updateUser(payload) {
   return {

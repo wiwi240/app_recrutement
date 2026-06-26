@@ -1,3 +1,5 @@
+import { defaultSkills, defaultUser } from './defaultState';
+
 const STORAGE_KEY = 'mini-malt-store';
 
 export function loadState() {
@@ -10,7 +12,10 @@ export function loadState() {
   }
 
   if (!serializedState) {
-    return undefined;
+    return {
+      user: defaultUser,
+      skills: defaultSkills,
+    };
   }
 
   try {
@@ -31,7 +36,10 @@ export function loadState() {
       },
     };
   } catch {
-    return undefined;
+    return {
+      user: defaultUser,
+      skills: defaultSkills,
+    };
   }
 }
 

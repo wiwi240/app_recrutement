@@ -5,7 +5,7 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <h2>Compétences</h2>
+      <h2>Skills</h2>
       {skills.length > 0 ? (
         <ul className="skills-list">
           {skills.map((skill) => (
@@ -13,7 +13,7 @@ export default function Sidebar() {
           ))}
         </ul>
       ) : (
-        <p className="empty-state">Aucune compétence renseignée.</p>
+        <p>No skills provided yet.</p>
       )}
     </aside>
   );

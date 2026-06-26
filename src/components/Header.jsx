@@ -1,40 +1,29 @@
 import { NavLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import Logo from './Logo';
+import UserName from './UserName';
 
 export default function Header() {
-  const fullName = useSelector((state) => state.user.fullName);
-  const skillsCount = useSelector((state) => state.skills.skillsCount);
-
   return (
-    <header className="site-header">
-      <div className="brand-block">
-        <div className="brand-mark">MM</div>
-        <div>
-          <p className="brand-title">Mini Malt</p>
-          <p className="brand-subtitle">Exercice React + Redux</p>
-        </div>
+    <header className="header">
+      <div className="header-left">
+        <Logo />
+        <nav className="navigation">
+          <NavLink to="/" className={({ isActive }) => navClassName(isActive)}>
+            Accueil
+          </NavLink>
+          <NavLink
+            to="/profile"
+            className={({ isActive }) => navClassName(isActive)}
+          >
+            Mon profil
+          </NavLink>
+        </nav>
       </div>
-
-      <nav className="main-nav" aria-label="Navigation principale">
-        <NavLink to="/" className={({ isActive }) => navClassName(isActive)}>
-          Accueil
-        </NavLink>
-        <NavLink
-          to="/profile"
-          className={({ isActive }) => navClassName(isActive)}
-        >
-          Profil
-        </NavLink>
-      </nav>
-
-      <div className="user-summary">
-        <strong>{fullName ?? 'inconnu'}</strong>
-        <span>{skillsCount} compétence{skillsCount > 1 ? 's' : ''}</span>
-      </div>
+      <UserName />
     </header>
   );
 }
 
 function navClassName(isActive) {
-  return `nav-link${isActive ? ' nav-link-active' : ''}`;
+  return isActive ? 'nav-link active' : 'nav-link';
 }

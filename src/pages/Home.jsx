@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 export default function Home() {
@@ -5,27 +6,34 @@ export default function Home() {
   const skills = useSelector((state) => state.skills.skills);
 
   return (
-    <section className="panel">
+    <section className="home-card">
       <h1>Bienvenue{fullName ? ` ${fullName} !` : ' !'}</h1>
-      <p className="lead">
-        Cette application permet de centraliser un profil candidat simple avec
-        Redux.
-      </p>
 
       {skills.length > 0 ? (
-        <>
-          <h2>Compétences actuelles</h2>
-          <ul className="skills-list">
+        <div className="home-skills-section">
+          <h2>Vos compétences</h2>
+          <ul className="home-skills-list">
             {skills.map((skill) => (
-              <li key={skill}>{skill}</li>
+              <li key={skill} className="home-skill-item">
+                <span className="skill-icon" aria-hidden="true">
+                  🚀
+                </span>
+                <span>{skill}</span>
+              </li>
             ))}
           </ul>
-        </>
+          <NavLink to="/profile" className="home-profile-link">
+            Modifier mes compétences
+          </NavLink>
+        </div>
       ) : (
-        <p className="empty-state">
-          Aucune compétence enregistrée. Va sur la page profil pour les
-          renseigner.
-        </p>
+        <div className="home-skills-section">
+          <h2>Vos compétences</h2>
+          <p>Aucune compétence pour le moment.</p>
+          <NavLink to="/profile" className="home-profile-link">
+            Modifier mes compétences
+          </NavLink>
+        </div>
       )}
     </section>
   );

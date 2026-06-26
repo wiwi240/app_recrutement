@@ -1,9 +1,8 @@
+import { defaultSkills } from '../defaultState';
+
 const UPDATE_SKILLS = 'skills/update';
 
-const initialState = {
-  skills: [],
-  skillsCount: 0,
-};
+const initialState = defaultSkills;
 
 export function updateSkills(payload) {
   return {
